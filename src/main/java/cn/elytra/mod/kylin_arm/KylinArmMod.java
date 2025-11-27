@@ -3,7 +3,9 @@ package cn.elytra.mod.kylin_arm;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -15,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import com.google.common.collect.Lists;
 
 import baubles.api.expanded.BaubleExpandedSlots;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -39,8 +42,16 @@ public class KylinArmMod {
     /// The list of blocks that should not gain any bonus from Kylin Arms.
     public static List<Block> kylinArmBlacklist = Lists.newArrayList();
 
+    @SuppressWarnings("SpellCheckingInspection")
+    public static final String ET_FUTURUM_MOD_ID = "etfuturum";
+
+    /// true if Et Futurum Requiem is loaded.
+    public static boolean hasEtFuturum;
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        hasEtFuturum = Loader.isModLoaded(ET_FUTURUM_MOD_ID);
+
         GameRegistry.registerItem(kylinArmItem = new KylinArmItem(), "kylin_arm");
 
         BaubleExpandedSlots.tryRegisterType(BAUBLE_TYPE);
@@ -53,6 +64,13 @@ public class KylinArmMod {
     public void postInit(FMLPostInitializationEvent event) {
         baubleTypeIds = BaubleExpandedSlots.getIndexesOfAssignedSlotsOfType(BAUBLE_TYPE);
 
+        Object[] tools = { Items.diamond_pickaxe, Items.diamond_axe, Items.diamond_hoe, Items.diamond_shovel };
+        if (hasEtFuturum) { // replace diamond tools to netherite ones
+            tools[0] = findItemSafe(ET_FUTURUM_MOD_ID, "netherite_pickaxe");
+            tools[1] = findItemSafe(ET_FUTURUM_MOD_ID, "netherite_axe");
+            tools[2] = findItemSafe(ET_FUTURUM_MOD_ID, "netherite_hoe");
+            tools[3] = findItemSafe(ET_FUTURUM_MOD_ID, "netherite_spade");
+        }
         GameRegistry.addShapedRecipe(
             new ItemStack(kylinArmItem),
             "BPB",
@@ -63,13 +81,13 @@ public class KylinArmMod {
             'N',
             Items.nether_star,
             'P',
-            Items.diamond_pickaxe,
+            tools[0],
             'A',
-            Items.diamond_axe,
+            tools[1],
             'H',
-            Items.diamond_hoe,
+            tools[2],
             'S',
-            Items.diamond_shovel);
+            tools[3]);
     }
 
     @SubscribeEvent
@@ -86,5 +104,14 @@ public class KylinArmMod {
             // not the server, making de-sync.
             event.newSpeed = event.originalSpeed * 10.0F;
         }
+    }
+
+    /// find the item from an external mod. if the target is null, returns an fire item with special name.
+    private static Object findItemSafe(String modid, String name) {
+        Item item = GameRegistry.findItem(modid, name);
+        if (item != null) return item;
+        ItemStack placeholder = new ItemStack(Blocks.fire);
+        placeholder.setStackDisplayName("Placeholder of " + modid + ":" + name);
+        return placeholder;
     }
 }
