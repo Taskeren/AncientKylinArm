@@ -1,22 +1,25 @@
 package cn.elytra.mod.kylin_arm;
 
-import baubles.api.expanded.BaubleExpandedSlots;
-import com.google.common.collect.Lists;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import com.google.common.collect.Lists;
+
+import baubles.api.expanded.BaubleExpandedSlots;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @SuppressWarnings("UnstableApiUsage")
 @NotNullByDefault
@@ -79,7 +82,8 @@ public class KylinArmMod {
     @SubscribeEvent
     public void onBreakSpeed(PlayerEvent.BreakSpeed event) {
         if (KylinArmItem.isKylinArmEquipped(event.entityPlayer)) {
-            // FIXME: there's a bug where when the speed is way too high, the block is instant-break on the client, but not the server, making de-sync.
+            // FIXME: there's a bug where when the speed is way too high, the block is instant-break on the client, but
+            // not the server, making de-sync.
             event.newSpeed = event.originalSpeed * 10.0F;
         }
     }

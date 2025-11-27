@@ -1,8 +1,8 @@
 package cn.elytra.mod.kylin_arm;
 
-import baubles.api.BaubleType;
-import baubles.api.BaublesApi;
-import baubles.api.expanded.IBaubleExpanded;
+import java.util.List;
+import java.util.stream.IntStream;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -12,8 +12,9 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import java.util.List;
-import java.util.stream.IntStream;
+import baubles.api.BaubleType;
+import baubles.api.BaublesApi;
+import baubles.api.expanded.IBaubleExpanded;
 
 public class KylinArmItem extends Item implements IBaubleExpanded {
 
