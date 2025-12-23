@@ -1,7 +1,6 @@
 package cn.elytra.mod.kylin_arm;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
@@ -14,6 +13,7 @@ import net.minecraft.item.ItemStack;
 
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
+import baubles.api.expanded.BaubleExpandedSlots;
 import baubles.api.expanded.IBaubleExpanded;
 
 public class KylinArmItem extends Item implements IBaubleExpanded {
@@ -31,9 +31,13 @@ public class KylinArmItem extends Item implements IBaubleExpanded {
 
     public static boolean isKylinArmEquipped(EntityPlayer player) {
         IInventory baubles = BaublesApi.getBaubles(player);
-        return IntStream.of(KylinArmMod.baubleTypeIds)
-            .mapToObj(baubles::getStackInSlot)
-            .anyMatch(KylinArmItem::isItemStackKylinArm);
+        for (int i = 0; i < baubles.getSizeInventory(); i++) { // whatever slots, just find the item
+            ItemStack stack = baubles.getStackInSlot(i);
+            if (isItemStackKylinArm(stack)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -49,7 +53,8 @@ public class KylinArmItem extends Item implements IBaubleExpanded {
 
     @Override
     public String[] getBaubleTypes(ItemStack itemstack) {
-        return new String[] { KylinArmMod.BAUBLE_TYPE };
+        return KylinArmMod.anySlot ? new String[] { BaubleExpandedSlots.universalType }
+            : new String[] { KylinArmMod.BAUBLE_TYPE };
     }
 
     @Override

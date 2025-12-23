@@ -8,6 +8,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -48,6 +49,9 @@ public class KylinArmMod {
     /// true if Et Futurum Requiem is loaded.
     public static boolean hasEtFuturum;
 
+    /// true if Kylin Arm is allowed to be equipped in any bauble slot.
+    public static boolean anySlot = false;
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         hasEtFuturum = Loader.isModLoaded(ET_FUTURUM_MOD_ID);
@@ -58,6 +62,13 @@ public class KylinArmMod {
         BaubleExpandedSlots.tryAssignSlotsUpToMinimum(BAUBLE_TYPE, 1);
 
         MinecraftForge.EVENT_BUS.register(this);
+
+        Configuration configuration = new Configuration(event.getSuggestedConfigurationFile());
+        anySlot = configuration.getBoolean(
+            "any-slot",
+            Configuration.CATEGORY_GENERAL,
+            false,
+            "Whether or not allow Kylin Arm be equipped in any bauble slot.");
     }
 
     @Mod.EventHandler
