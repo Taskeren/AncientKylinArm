@@ -69,6 +69,7 @@ public class KylinArmMod {
             Configuration.CATEGORY_GENERAL,
             false,
             "Whether or not allow Kylin Arm be equipped in any bauble slot.");
+        configuration.save();
     }
 
     @Mod.EventHandler
